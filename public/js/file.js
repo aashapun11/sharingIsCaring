@@ -1,7 +1,4 @@
 
-
-
-
 const copyURLBtn = document.querySelector("#copyURLBtn");
 const fileURL = document.querySelector("#fileURL");
 
