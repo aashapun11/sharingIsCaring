@@ -1,4 +1,5 @@
 // To be able to see the files and download by receiver which was sent by sender
+require('dotenv').config();
 const router = require('express').Router();
 const fileshare = require("../model/model");
 
