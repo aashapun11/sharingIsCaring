@@ -20,13 +20,13 @@ let upload = multer({
     limit : {fileSize : 1000000*100} //1MB = 1000000 
 }).single('myfile');
 
-
+//To send the files from POSTMAN so that users can see the url link like this way //http://localhost:3000/files/478989dhjfdh-y47487dhf
 router.post('/',(req,res)=>{
+   
     //Validate request
-
     //Store the files
 upload(req, res, async(err)=>{
-
+    
     if(!req.file){
         return res.json({error : "All fields are required"});
     }
@@ -42,8 +42,12 @@ upload(req, res, async(err)=>{
             size : req.file.size
         })
         const response = await file.save();
-        return res.json({file : `${process.env.APP_BASE_URL}/files/${response.uuid}`});
-        //http://localhost:3000/files/478989dhjfdh-y47487dhf (Client will see like this way)
+        return res.render('share', {
+            link : `${process.env.APP_BASE_URL}/files/${file.uuid}`,
+            uuid : file.uuid
+        });
+
+        //http://localhost:3000/files/478989dhjfdh-y47487dhf (Client will see like this way as a download page)
 
 })
 
@@ -53,6 +57,7 @@ upload(req, res, async(err)=>{
 
 //Sending the files via links
 router.post('/send',async(req,res)=>{
+   
     const {uuid, emailTo, emailFrom} = req.body;
 
     // validate request
@@ -64,9 +69,9 @@ router.post('/send',async(req,res)=>{
     const file = await fileshare.findOne({uuid : uuid});
 
     //Checking weather we have send this receiver previosuly or not
-    if(file.sender){
-        return res.status(422).send({error : "Email already Sent"});
-    }
+    // if(file.sender){
+    //     return res.status(422).send({error : "Email already Sent"});
+    // }
 
 
     file.sender = emailFrom;
@@ -79,7 +84,7 @@ router.post('/send',async(req,res)=>{
         from : emailFrom,
         to : emailTo,
         subject : "Aasha Paija Filesharing",
-        text : `${emailFrom} shared a file with you.`,
+        text : `${emailFrom} shared a file with you.`, 
         html : require('../services/emailTemplate')({
             emailFrom : emailFrom,
             downloadLink : `${process.env.APP_BASE_URL}/files/${file.uuid}`,
@@ -88,7 +93,7 @@ router.post('/send',async(req,res)=>{
         })
     });
 
-    return res.send({success : true})
+    return res.redirect('/');
 })
 
 module.exports = router;

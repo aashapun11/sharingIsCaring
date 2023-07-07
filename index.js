@@ -2,6 +2,7 @@ const express = require('express');
 const connectDB = require('./server/database/db');
 const app = express();
 const path = require('path');
+const bodyParser = require('body-parser')
 const PORT = process.env.PORT ||3000;
 require('dotenv').config();
 
@@ -16,6 +17,17 @@ app.use(express.static('public'))
 
 //rendering time ma json form ma hunxa and json form has to allow
 app.use(express.json());
+app.use(bodyParser.urlencoded(
+    { extended:true }
+))
+
+app.get('/',(req,res)=>{
+    res.render('upload')
+})
+
+// app.get('/share',(req,res)=>{
+//     res.render('share')
+// })
 
 //Routes 
 app.use('/api/files',require('./server/router/router'))
