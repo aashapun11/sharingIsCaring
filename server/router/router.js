@@ -17,7 +17,7 @@ let storage = multer.diskStorage({
 
 let upload = multer({
     storage,
-    limit : {fileSize : 1000000*100} //1MB = 1000000 
+    limit :  100 * 1024 * 1024 //1MB = 1000
 }).single('myfile');
 
 //To send the files from POSTMAN so that users can see the url link like this way //http://localhost:3000/files/478989dhjfdh-y47487dhf
@@ -25,6 +25,7 @@ router.post('/',(req,res)=>{
    
     //Validate request
     //Store the files
+    
 upload(req, res, async(err)=>{
     
     if(!req.file){
